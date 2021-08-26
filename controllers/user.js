@@ -1,6 +1,6 @@
-const { NODE_ENV, JWT_SECRET } = process.env;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const { CURRENT_JWT_SECRET } = require('../configs/index');
 const User = require('../models/user');
 const NotFoundError = require('../errors/not-found-err');
 const UnauthorizedError = require('../errors/unauthorized-err');
@@ -59,7 +59,7 @@ module.exports = {
 
             const token = jwt.sign(
               { _id: user._id },
-              NODE_ENV === 'production' ? JWT_SECRET : 'dev-secret',
+              CURRENT_JWT_SECRET,
               { expiresIn: '7d' },
             );
             return res
@@ -83,8 +83,10 @@ module.exports = {
         return res.send(user);
       })
       .catch((err) => {
-        if (err.name === 'CastError') {
-          next(new BadRequestError('Переданы некорректные данные при обновлении профиля.'));
+        if (err.name === 'MongoError' && err.code === 11000) {
+          next(new ConflictError('Данный email зарегестрирован в системе'));
+        } else if (err.name === 'ValidationError') {
+          next(new BadRequestError('Переданы некорректные данные при создании профиля.'));
         }
         return next(err);
       });

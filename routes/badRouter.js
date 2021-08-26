@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const NotFoundError = require('../errors/not-found-err');
 
-router.get('*', () => {
+router.all('*', () => {
   throw new NotFoundError('Не известный маршрут/путь.');
 });
 

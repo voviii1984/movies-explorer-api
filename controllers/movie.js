@@ -44,8 +44,9 @@ module.exports = {
       .catch((err) => {
         if (err.name === 'ValidationError') {
           next(new BadRequestError('Переданы некорректные данные при создании карточки'));
+        } else {
+          next(err);
         }
-        return next(err);
       });
   },
   deleteMovies(req, res, next) {
@@ -57,7 +58,7 @@ module.exports = {
         if (movie.owner.toString() !== req.user._id) {
           throw new ForbiddenError('Можно удалять только свои карточки.');
         } else {
-          Movie
+          return Movie
             .findByIdAndRemove(req.params.movieId)
             .then(() => res.send(movie));
         }
