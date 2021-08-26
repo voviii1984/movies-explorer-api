@@ -10,7 +10,6 @@ module.exports = {
       .catch(next);
   },
   createMovies(req, res, next) {
-    // console.log(req.user._id);
     const {
       country,
       director,
