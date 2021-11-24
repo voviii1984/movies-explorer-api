@@ -21,6 +21,30 @@ const limiter = rateLimit({
   max: 100, // limit each IP to 100 requests per windowMs
 });
 
+const allowedCors = [
+  'https://voviii1984.diplom.nomoredomains.work',
+  'http://voviii1984.diplom.nomoredomains.work',
+];
+
+app.use((req, res, next) => {
+  const { origin } = req.headers; // Сохраняем источник запроса в переменную origin
+  // проверяем, что источник запроса есть среди разрешённых
+  if (allowedCors.includes(origin)) {
+    // устанавливаем заголовок, который разрешает браузеру запросы с этого источника
+    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Credentials', true);
+
+    const DEFAULT_ALLOWED_METHODS = 'GET,HEAD,PUT,PATCH,POST,DELETE';
+
+    if (req.method === 'OPTIONS') {
+      // разрешаем кросс-доменные запросы любых типов (по умолчанию)
+      res.header('Access-Control-Allow-Methods', DEFAULT_ALLOWED_METHODS);
+      res.header('Access-Control-Allow-Headers', 'Origin, Content-Type');
+      res.status(204).send();
+    } else next();
+  } else next();
+});
+
 app.use(helmet());
 // parse application/json
 app.use(bodyParser.json());
