@@ -50,7 +50,7 @@ app.use(helmet());
 app.use(bodyParser.json());
 // parse application/x-www-form-urlencoded
 // app.use(bodyParser.urlencoded({ extended: true }));
-app.use(express.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect(moviesdb, {
   useNewUrlParser: true,
