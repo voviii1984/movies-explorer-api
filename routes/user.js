@@ -11,6 +11,6 @@ router.get('/users/me', getUserProfile);
 
 router.patch('/users/me', updateUserValidator, updateUser);
 
-router.post('/signout', clearToken);
+router.post('/users/signout', clearToken);
 
 module.exports = router;
