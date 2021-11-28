@@ -1,6 +1,6 @@
 const router = require('express').Router();
 
-const { login, createUser, clearToken } = require('../controllers/user');
+const { login, createUser } = require('../controllers/user');
 const { signinValidator, signupValidator } = require('../middlewares/validations');
 const auth = require('../middlewares/auth');
 const userRoutes = require('./user');
@@ -10,8 +10,6 @@ const badRouter = require('./badRouter');
 router.post('/signin', signinValidator, login);
 
 router.post('/signup', signupValidator, createUser);
-
-router.post('/signout', clearToken);
 
 router.use(auth);
 
