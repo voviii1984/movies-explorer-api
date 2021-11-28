@@ -5,7 +5,8 @@ const ForbiddenError = require('../errors/forbidden-err');
 
 module.exports = {
   findMovies(req, res, next) {
-    Movie.find({})
+    const { user: { _id } } = req;
+    Movie.find({ owner: _id })
       .then((movies) => res.send(movies.reverse()))
       .catch(next);
   },
@@ -54,7 +55,7 @@ module.exports = {
         if (!movie) {
           throw new NotFoundError('Карточка с указанным _id не найдена.');
         }
-        if (movie.owner.toString() !== req.user._id) {
+        if (req.user._id !== movie.owner.toString()) {
           throw new ForbiddenError('Можно удалять только свои карточки.');
         } else {
           return Movie
